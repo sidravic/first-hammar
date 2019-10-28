@@ -109,3 +109,42 @@ docker node update --label-add stateful=true 34d4shrb3ihvbmueisio2pnxk
 docker node update --label-add postgres=true 34d4shrb3ihvbmueisio2pnxk
 docker node update --label-add redis=true 34d4shrb3ihvbmueisio2pnxk
 ```
+
+# Create our Postgres Image (glorious-tower)
+
+We build our image from the default postgres 12.0 image on dockerhub.
+
+1. Our primary postgres image is codenamed `glorious-tower`
+2. To build your image run
+
+```
+$ cd ./local/postgres
+$ docker build -t glorious-tower .
+```
+
+Now `docker images glorious-tower` should return 
+
+```
+docker images glorious-tower
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+glorious-tower      latest              cefea7c1cb7f        3 minutes ago       369MB
+```
+
+Launch the postgres container using the `development.env` file in the folder
+
+```
+$ ./start_postgres.sh
+```
+
+This creates 
+1. a super user with value specified in the `$POSTGRES_USER` environment variable
+2. a database with the value specified in `$POSTGRES_DB`
+
+An additional set of users with password, permissions and database is created using the 
+`init-user-db.sh` file loaded on boot using the `/docker-entrypoint-initdb.d/init-user-db.sh`
+configurations executed. This is described in more detail here https://hub.docker.com/_/postgres?tab=description
+
+
+
+
+
