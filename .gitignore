@@ -1,0 +1,4 @@
+.envrc
+production.env
+development.env
+.history
