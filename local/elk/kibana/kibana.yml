@@ -1,0 +1,6 @@
+server.port: 5601
+server.host: "0.0.0.0"
+server.name: "logs-home"
+kibana.index: ".kibana-test"
+elasticsearch.hosts:
+  - http://es01:9200

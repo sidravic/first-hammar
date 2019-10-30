@@ -1,0 +1,53 @@
+version: '2.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1 
+    env_file:
+      - development.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/elasticsearch/development:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - esnet
+
+  kibana:
+    depends_on:
+      - es01
+    image: docker.elastic.co/kibana/kibana:7.4.1    
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml  
+      -  /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/kibana/development:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+    ports:
+      - "5601:5601" 
+
+  logstash:
+    build: 
+      context: ./logstash
+      dockerfile: Dockerfile      
+    depends_on:
+      - es01
+    image: logstash:latest
+    env_file: 
+      - logstash-development.env
+    ports:
+      - '9600:9600'
+      - '5228:5228/udp' 
+    networks:
+      - esnet   
+    command: ['/usr/share/logstash/bin/logstash']
+
+volumes:
+  esdata01:
+    driver: local
+
+
+networks:
+  esnet:
