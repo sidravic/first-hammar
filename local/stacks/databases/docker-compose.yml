@@ -1,29 +1,38 @@
-version: '2.2'
+version: '3'
+
 services:
   glorious-tower-postgres:
-    image: registry.gitlab.com/goglance/first-hammar:postgres-1572534333
+    image: registry.gitlab.com/goglance/first-hammar:postgres-1572596571
     env_file:
       - development.env
     volumes:
-      - /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/postgres/development:/var/lib/postgresql/data
+      - /postgres-data:/var/lib/postgresql/data
     ports:
       - 5433:5432
     networks:
       - development-db-network
       - dev-global-network
+    deploy:
+      placement:
+        constraints:
+          - node.labels.postgres == true
   
   ephemeral-tower-redis:
-    image: registry.gitlab.com/goglance/first-hammar:redis-1572534629
+    image: registry.gitlab.com/goglance/first-hammar:redis-1572596611
     env_file: 
       - development.env
     volumes:
-      - /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/redis/development:/data  
+      - /redis-data:/data  
     ports:
       - 6380:6379
     networks:
       - development-db-network
       - dev-global-network
     command: redis-server /etc/redis/redis.conf
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
 
 
 networks:
