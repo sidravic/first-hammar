@@ -6,7 +6,7 @@ services:
     env_file:
       - development.env
     volumes:
-      - /postgres-data:/var/lib/postgresql/data
+      - /home/docker/postgres-data:/var/lib/postgresql/data
     ports:
       - 5433:5432
     networks:
@@ -22,7 +22,7 @@ services:
     env_file: 
       - development.env
     volumes:
-      - /redis-data:/data  
+      - /home/docker/redis-data:/data  
     ports:
       - 6380:6379
     networks:

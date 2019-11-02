@@ -9,12 +9,16 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/elasticsearch/development:/usr/share/elasticsearch/data
+      - /docker/home/elastic-data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
     networks:
       - esnet
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
 
   kibana:
     depends_on:
@@ -22,11 +26,15 @@ services:
     image: docker.elastic.co/kibana/kibana:7.4.1    
     volumes:
       - ./../../elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml  
-      - /home/sidravic/Dropbox/code/workspace/rails_apps/idylmynds/first-hammar/stateful_data/kibana/development:/usr/share/elasticsearch/data
+      - /docker/home/kibana-data:/usr/share/kibana/data
     networks:
       - esnet
     ports:
       - "5601:5601" 
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
 
   logstash:
     build: 
@@ -43,11 +51,10 @@ services:
     networks:
       - esnet   
     command: ['/usr/share/logstash/bin/logstash']
-
-volumes:
-  esdata01:
-    driver: local
-
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
 
 networks:
   esnet:

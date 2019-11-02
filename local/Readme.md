@@ -110,6 +110,27 @@ docker node update --label-add postgres=true 34d4shrb3ihvbmueisio2pnxk
 docker node update --label-add redis=true 34d4shrb3ihvbmueisio2pnxk
 ```
 
+Similarly, let's add tags for ELK logging stack
+
+```
+docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+vhnz9ywgvr8aov29mk7iskdy3 *   vm1                 Ready               Active              Leader              19.03.4
+k8g650b55dn9lhca8o28qfg0f     vm2                 Ready               Active                                  19.03.4
+34d4shrb3ihvbmueisio2pnxk     vm3                 Ready               Active                                  19.03.4
+➜  databases git:(master) ✗ docker node update --label-add logging=true k8g650b55dn9lhca8o28qfg0f
+k8g650b55dn9lhca8o28qfg0f
+➜  databases git:(master) ✗ docker node update --label-add stateful=true k8g650b55dn9lhca8o28qfg0f
+k8g650b55dn9lhca8o28qfg0f
+➜  databases git:(master) ✗ docker node update --label-add elasticsearch=true k8g650b55dn9lhca8o28qfg0f
+k8g650b55dn9lhca8o28qfg0f
+➜  databases git:(master) ✗ docker node update --label-add kibana=true k8g650b55dn9lhca8o28qfg0f 
+k8g650b55dn9lhca8o28qfg0f
+➜  databases git:(master) ✗ docker node update --label-add logstash=true k8g650b55dn9lhca8o28qfg0f
+k8g650b55dn9lhca8o28qfg0f
+
+```
+
 # Create our Postgres Image (glorious-tower)
 
 We build our image from the default postgres 12.0 image on dockerhub.
