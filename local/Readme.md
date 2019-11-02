@@ -428,3 +428,71 @@ postgres_redis_ephemeral-tower-redis.1.tail3n20q6n7@vm3    | 1:M 01 Nov 2019 08:
 Great! We see some VM specific configuration issues but they can be resolved on the node level. 
 
 
+# Removing a node and destroyin the container
+
+Assuming we want to resize the vm2 from the default 1026 mb to a 3078 mb machine.
+
+1. Exit the swarm
+2. Remove the node
+3. Delete the vm1
+
+
+```
+# Logging into vm2
+$ docker-machine ssh vm2
+
+docker@vm2:~$ docker swarm leave                             
+Node left the swarm.
+
+$ exit 
+```
+
+We've now left the swarm
+
+We delete the node from the master node
+```
+$ eval $(docker-machine env vm1)
+
+$ docker node rm vm2
+$ docker node ls                          
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+vhnz9ywgvr8aov29mk7iskdy3 *   vm1                 Ready               Active              Leader              19.03.4
+34d4shrb3ihvbmueisio2pnxk     vm3                 Ready               Active                                  19.03.4
+```
+
+Now we see only two nodes
+
+We now delete the virtual machine
+
+```
+$ docker-machine rm vm2
+WARNING: This action will delete both local reference and remote instance.
+Are you sure? (y/n): y
+Successfully removed vm2
+```
+
+Now we create a new resized vm with the additional memory
+
+```
+$  docker-machine create --driver virtualbox --virtualbox-memory 3072 vm2
+Running pre-create checks...
+Creating machine...
+(vm2) Copying /home/sidravic/.docker/machine/cache/boot2docker.iso to /home/sidravic/.docker/machine/machines/vm2/boot2docker.iso...
+(vm2) Creating VirtualBox VM...
+(vm2) Creating SSH key...
+(vm2) Starting the VM...
+(vm2) Check network to re-create if needed...
+(vm2) Waiting for an IP...
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with boot2docker...
+Copying certs to the local machine directory...
+Copying certs to the remote machine...
+Setting Docker configuration on the remote daemon...
+Checking connection to Docker...
+Docker is up and running!
+To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env vm2
+
+````
