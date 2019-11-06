@@ -1,0 +1,11 @@
+libstorage:
+  service: virtualbox
+  integration:
+    volume:
+      operations:
+        mount:
+          preempt: true
+virtualbox:
+  endpoint: http://10.0.0.6:18083
+  volumePath: "/home/sidravic/VirtualBox VMs"
+  controllerName: SATA

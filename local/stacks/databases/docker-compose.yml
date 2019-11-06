@@ -1,18 +1,22 @@
-version: '3'
+version: '3.2'
 
 services:
   glorious-tower-postgres:
-    image: registry.gitlab.com/goglance/first-hammar:postgres-1572596571
+    image: registry.gitlab.com/goglance/first-hammar:postgres-1572939467
     env_file:
       - development.env
     volumes:
-      - /home/docker/postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     ports:
       - 5433:5432
-    networks:
-      - development-db-network
-      - dev-global-network
+    networks:      
+      - core-infra 
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s
       placement:
         constraints:
           - node.labels.postgres == true
@@ -22,21 +26,30 @@ services:
     env_file: 
       - development.env
     volumes:
-      - /home/docker/redis-data:/data  
+      - redis-data:/data  
     ports:
       - 6380:6379
     networks:
-      - development-db-network
-      - dev-global-network
+      - core-infra
     command: redis-server /etc/redis/redis.conf
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s      
       placement:
         constraints:
           - node.labels.redis == true
 
 
-networks:
-  development-db-network:
+volumes:
+  postgres-data:            
+    driver: rexray 
+  redis-data:
+    driver: rexray 
+      
 
-  dev-global-network:
-    external: true
+networks:
+  core-infra:
+    external: true  

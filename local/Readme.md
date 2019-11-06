@@ -496,3 +496,226 @@ Docker is up and running!
 To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env vm2
 
 ````
+
+
+# Installing Rexraxy
+
+URL for curl script to be run on docker-machine vm1
+
+```
+$ curl -sSL https://rexray.io/install | sh -s -- stable 0.11.1
+
+generating self-signed certificate...
+  /etc/rexray/tls/rexray.crt
+  /etc/rexray/tls/rexray.key
+
+rexray has been installed to /usr/bin/rexray
+
+REX-Ray
+-------
+Binary: /usr/bin/rexray
+Flavor: client+agent+controller
+SemVer: 0.11.1
+OsArch: Linux-x86_64
+Commit: 1608180686ac4426b04941b4002fb33b9efd972e
+Formed: Tue, 19 Dec 2017 22:26:34 UTC
+
+
+```
+
+### To install random libraries like `vim` `nmap` or `tcpdump` use 
+
+```
+sudo su - docker -c 'tce-load -wi vim.tcz &' 
+```
+
+### Solution for Rexray having trouble creating the necessary volumes and IDs
+
+From https://github.com/rexray/rexray/issues/255
+```
+$ wget http://tinycorelinux.net/6.x/x86_64/tcz/udev-extra.tcz
+$ sudo tce-load -i udev-extra.tcz
+$ sudo udevadm trigger
+
+```
+
+While running it from jumpbox or host machine
+
+```
+➜  first-hammar git:(master) ✗ docker-machine scp local/rexray/rexray-volume-error.sh vm3:/tmp/volume.sh
+rexray-volume-error.sh                                                   100%  105   282.3KB/s   00:00    
+➜  first-hammar git:(master) ✗ docker-machine scp local/rexray/rexray-volume-error.sh vm2:/tmp/volume.sh
+rexray-volume-error.sh                                                   100%  105   228.6KB/s   00:00    
+➜  first-hammar git:(master) ✗ docker-machine scp local/rexray/rexray-volume-error.sh vm1:/tmp/volume.sh
+rexray-volume-error.sh                                                   100%  105   266.6KB/s   00:00 
+```
+
+Then execute it by
+
+```
+docker-machine ssh vm1 "./tmp/volume.sh"
+docker-machine ssh vm2 "./tmp/volume.sh"
+docker-machine ssh vm3 "./tmp/volume.sh"
+docker-machine ssh vm4 "./tmp/volume.sh"
+```
+### Copy the rexray configuration files onto each machine
+
+1. Create a `config.yml` file locally
+
+```
+
+```
+### Login to each machine and launch rexray
+
+```
+rexray:
+  loglevel: warn
+  storageDrivers:
+    - virtualbox
+  volumeDrivers:
+    - docker
+
+  docker:
+    size: 1
+
+libstorage:
+  service: virtualbox
+  integration:
+    volume:
+      operations:
+        mount:
+          preempt: true
+
+virtualbox:
+  endpoint: http://10.0.0.6:18083
+  volumePath: "/home/sidravic/VirtualBox VMs"
+  controllerName: SATA
+  tls: false
+```
+
+The libstorage configuration points to the machine where the virtual box web service is running. We need to launch this using
+on your local machine with 
+
+```
+When using the VirtualBox SOAP API service for the first time, disable authentication:
+
+$ VBoxManage setproperty websrvauthlibrary null
+
+Start the VirtualBox SOAP API to accept API requests from the REX-Ray service in a new terminal window:
+
+$ vboxwebsrv -H 0.0.0.0 -v
+```
+
+Now rexray running on each node can communicate with this web service to access the volume information.
+
+### Start Rexray
+
+Note: Rexray service seems to exist when not launched from the node itself so login and run it as a background process. 
+```
+$ docker-machine ssh vm1 
+docker@vm1 $ sudo rexray start -c /etc/rexray/config.xml &
+
+... watch the logs scroll Binary
+docker@vm1 $ sudo rexray STATUS
+rexray is running on PID 5974
+
+```
+
+
+### Create Volumes that can be attached onto each service
+
+```
+$ rexray volume create postgres_redis_postgres-data --attachable --size=13 -c /etc/rexray/config.xml
+9ecaddb2-c922-4d44-9b6a-ae896211d91c
+
+$ rexray volume ls -c 
+
+ID                                    Name                          Status       Size
+fe2922c3-2c2c-4eef-a63d-c255481fb05d  disk.vmdk                     attached     19
+b1224e55-def2-483b-953d-02329b2096a9  disk.vmdk                     unavailable  19
+ca7b00e0-58c3-409e-9837-cc37bc74cc94  disk.vmdk                     unavailable  19
+d7c12bcf-5b8b-4095-9842-3df850c1eb7d  disk.vmdk                     unavailable  19
+d151f7a3-769d-4a84-9dc3-161faa46362a  logging_elastic-data          unavailable  16
+b110bacf-4d86-40c6-9830-7ea446f51282  postgres_redis-postgres-data  attached     16
+9ecaddb2-c922-4d44-9b6a-ae896211d91c  postgres_redis-redis-data     attached     2
+b7f336e3-dff4-4d20-bbd1-34a1b5588d99  postgres_redis_postgres-data  unavailable  16
+f8031b6d-069a-423c-a22f-6b37c49d5d38  postgres_redis_redis-data     unavailable  16
+
+```
+
+This creates an unattached, available volume ready for use. This can be explicitly using the `attach` command or implicitly attached using the `docker-compose.yml` file using the `external` attribute
+
+Our docker-compose.yml file now looks like this while referencing the volumes 
+
+
+```
+version: '3.2'
+
+services:
+  glorious-tower-postgres:
+    image: registry.gitlab.com/goglance/first-hammar:postgres-1572939467
+    env_file:
+      - development.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:      
+      - core-infra 
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s
+      placement:
+        constraints:
+          - node.labels.postgres == true
+  
+  ephemeral-tower-redis:
+    image: registry.gitlab.com/goglance/first-hammar:redis-1572596611
+    env_file: 
+      - development.env
+    volumes:
+      - redis-data:/data  
+    ports:
+      - 6380:6379
+    networks:
+      - core-infra
+    command: redis-server /etc/redis/redis.conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s      
+      placement:
+        constraints:
+          - node.labels.redis == true
+
+
+volumes:
+  postgres-data:            
+    driver: rexray 
+  redis-data:
+    driver: rexray 
+      
+
+networks:
+  core-infra:
+    external: true  
+
+```
+
+These volumes no reflect in the folder referenced in each `/etc/rexray/config.yml` file under the `libstorage.VolumePath`. It also reflects under each node where the volumes are stored under
+
+```
+/var/lib/rexray/volumes
+
+total 8
+drwxr-xr-x    4 root     root            80 Nov  6 11:21 .
+drwxr-xr-x    4 root     root            80 Nov  4 23:08 ..
+drwxr-xr-x    4 root     root          4096 Nov  4 23:08 postgres_redis_postgres-data
+drwxr-xr-x    4 root     root          4096 Nov  4 23:08 postgres_redis_redis-data
+
+```
