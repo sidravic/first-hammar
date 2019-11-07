@@ -719,3 +719,76 @@ drwxr-xr-x    4 root     root          4096 Nov  4 23:08 postgres_redis_postgres
 drwxr-xr-x    4 root     root          4096 Nov  4 23:08 postgres_redis_redis-data
 
 ```
+
+## Ensuring that all the containers in the Swarm can speak with each others
+
+We use an `attachable` overlay network that runs across the entire infrastructure.
+
+We create that using
+
+```
+ docker network create --driver overlay --attachable=true core-infra  
+```
+
+Now we use this network as the primary network in each of our `docker-compose.yml` files as an external network.
+
+For example
+
+```
+version: '3.2'
+
+services:
+  glorious-tower-postgres:
+    image: registry.gitlab.com/goglance/first-hammar:postgres-1572939467
+    env_file:
+      - development.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:      
+      - core-infra 
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s
+      placement:
+        constraints:
+          - node.labels.postgres == true
+  
+  ephemeral-tower-redis:
+    image: registry.gitlab.com/goglance/first-hammar:redis-1572596611
+    env_file: 
+      - development.env
+    volumes:
+      - redis-data:/data  
+    ports:
+      - 6380:6379
+    networks:
+      - core-infra
+    command: redis-server /etc/redis/redis.conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s      
+      placement:
+        constraints:
+          - node.labels.redis == true
+
+
+volumes:
+  postgres-data:            
+    driver: rexray 
+  redis-data:
+    driver: rexray 
+      
+
+networks:
+  core-infra:
+    external: true  
+
+```
