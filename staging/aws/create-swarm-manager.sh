@@ -14,7 +14,8 @@ function create_manager_nodes(){
                           --amazonec2-security-group $swarm_security_group_id \
                           --amazonec2-tags swarm_manager,true,environment,staging \
                           --amazonec2-volume-type gp2 \
-                          --amazonec2-vpc-id $DEFAULT_VPC_ID "$node_name"
+                          --amazonec2-vpc-id $DEFAULT_VPC_ID \
+                          --amazonec2-ssh-keypath $DEFAULT_KEY_PATH "$node_name" 
 
 
 }
