@@ -13,6 +13,7 @@ function create_manager_nodes(){
                           --amazonec2-root-size 30 \
                           --amazonec2-security-group swarm-security-group \
                           --amazonec2-tags swarm_manager,true,environment,staging \
+                          --amazonec2-use-private-address \
                           --amazonec2-volume-type gp2 \
                           --amazonec2-vpc-id $DEFAULT_VPC_ID \
                           --amazonec2-monitoring \
@@ -44,3 +45,20 @@ function create_3_manager_nodes(){
 }
 
 create_3_manager_nodes
+
+
+# docker-machine create --driver amazonec2 \
+#                           --amazonec2-region $DEFAULT_REGION \
+#                           --amazonec2-ami $DEFAULT_AMI_ID \
+#                           --amazonec2-instance-type t2.small \
+#                           --amazonec2-keypair-name $DEFAULT_KEY_NAME \
+#                           --amazonec2-monitoring \
+#                           --amazonec2-root-size 30 \
+#                           --amazonec2-security-group swarm-security-group \
+#                           --amazonec2-tags swarm_manager,true,environment,staging \
+#                           --amazonec2-volume-type gp2 \
+#                           --amazonec2-use-private-address \
+#                           --amazonec2-vpc-id $DEFAULT_VPC_ID \
+#                           --amazonec2-monitoring \
+#                           --amazonec2-ssh-keypath $DEFAULT_KEY_PATH \
+#                           --amazonec2-zone c "vm1" 
