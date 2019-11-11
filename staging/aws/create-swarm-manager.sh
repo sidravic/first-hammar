@@ -31,3 +31,5 @@ function create_3_manager_nodes(){
         create_manager_nodes
     done
 }
+
+create_3_manager_nodes
