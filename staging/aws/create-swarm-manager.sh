@@ -17,10 +17,7 @@ function create_manager_nodes(){
                           --amazonec2-vpc-id $DEFAULT_VPC_ID \
                           --amazonec2-ssh-keypath $DEFAULT_KEY_PATH \
                           --amazonec2-zone $subnet_zone "$node_name" 
-
-
 }
-
 
 function find_subnet_zone(){
     if [ $(($i % 2)) -eq 0 ];
@@ -31,10 +28,9 @@ function find_subnet_zone(){
     fi
 }
 
-
 function create_3_manager_nodes(){
     echo "Getting security group for swarm"
-    swarm_security_group_id=get_swarm_security_group_id
+    get_swarm_security_group_id
     
     for i in 1 2 3;
     do 
