@@ -3,3 +3,6 @@ production.env
 development.env
 .history
 stateful_data
+staging/keys
+jumpbox-user-data.txt
+staging/aws/rexray/config.yml
