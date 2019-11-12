@@ -30,7 +30,7 @@ function find_subnet_zone(){
 }
 
 function create_3_worker_nodes(){
-    for i in 1 2 3;
+    for i in 4 5 6;
     do
         find_subnet_zone  
         echo "Subnet zone: $subnet_zone" 
