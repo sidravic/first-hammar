@@ -23,10 +23,19 @@ function create_worker_nodes(){
                           --amazonec2-zone $subnet_zone "$node_name" 
 }
 
+function find_subnet_zone(){
+    if [ $(($i % 2)) -eq 0 ];
+    then
+        subnet_zone="c"
+    else
+        subnet_zone="b"
+    fi
+}
 
 function create_3_manager_nodes(){
     for i in 1 2 3;
-    do         
+    do
+        find_subnet_zone         
         create_worker_node
     done
 }

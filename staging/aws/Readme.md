@@ -82,6 +82,8 @@ DOCKER_COMMAND="docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_
 docker-machine ls | cut -c 1-4 | grep vm* | xargs -t -I"SERVER" /bin/bash -c "docker-machine ssh SERVER '${DOCKER_COMMAND}'"
 ```
 
+Xargs examples: https://shapeshed.com/unix-xargs/
+
 1. It stores the command to be run in the `DOCKER_COMMAND` variable
 2. It then runs the `docker-machine ls` command which returns the entire list of vms
 3. It `cut`s the characters from 1-4 which describe the hostname (vm1, vm2 etc)
