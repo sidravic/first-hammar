@@ -14,13 +14,18 @@ Creating the stack requires the following steps
 ### 1. Create the swarm security group
 
 ```
-(aws) $ ./create-swarm.sh create
+(aws first-hammar/staging) $ ./create-swarm-sg.sh create
 ```
 
 ### 2. Create jumpbox and security groups. Attach jumbox to swarm security group for full port access
 
 ```
-(aws) $ ./create-jumpbox.sh create
+(aws first-hammar/staging) $ ./create-jumpbox.sh create
+```
+
+### 3 Create Swarm
+```
+(aws first-hammar/staging) $ ./create-swarm-manager.sh
 ```
 
 ### 7. Install Rexray managed plugin for docker on the jumpbox and all swarm nodes

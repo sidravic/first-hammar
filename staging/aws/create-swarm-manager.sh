@@ -12,7 +12,7 @@ function create_manager_nodes(){
                           --amazonec2-monitoring \
                           --amazonec2-root-size 30 \
                           --amazonec2-security-group swarm-security-group \
-                          --amazonec2-tags swarm_manager,true,environment,staging \
+                          --amazonec2-tags swarm_manager,true,environment,staging,swarm,true \
                           --amazonec2-use-private-address \
                           --amazonec2-volume-type gp2 \
                           --amazonec2-vpc-id $DEFAULT_VPC_ID \
