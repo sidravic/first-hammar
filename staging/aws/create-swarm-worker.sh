@@ -36,7 +36,7 @@ function create_3_worker_nodes(){
     for i in 1 2 3;
     do
         find_subnet_zone         
-        create_worker_node
+        create_worker_nodes
     done
 }
 
