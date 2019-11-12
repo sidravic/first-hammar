@@ -169,3 +169,10 @@ ID                  NAME                DESCRIPTION              ENABLED
 832de09c0765        rexray/ebs:latest   REX-Ray for Amazon EBS   true
 
 ```
+### Add Labels to nodes
+
+Run `add-labels.sh`
+
+```
+(aws first-hammer/staging/aws/) ./add-labels.sh
+```
