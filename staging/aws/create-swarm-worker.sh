@@ -1,8 +1,5 @@
 #!/bin/bash
-
-#!/bin/bash
-
-
+set -e
 source ./security-groups.sh
 
 function create_worker_nodes(){
@@ -35,7 +32,10 @@ function find_subnet_zone(){
 function create_3_worker_nodes(){
     for i in 1 2 3;
     do
-        find_subnet_zone         
+        find_subnet_zone  
+        echo "Subnet zone: $subnet_zone" 
+        node_name="vm${i}"
+        echo "Creating swarm worker nodes $node_name"      
         create_worker_nodes
     done
 }

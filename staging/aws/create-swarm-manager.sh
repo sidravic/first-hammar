@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 source ./security-groups.sh
 
 function create_manager_nodes(){
