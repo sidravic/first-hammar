@@ -31,7 +31,7 @@ services:
     image: docker.elastic.co/kibana/kibana:7.4.1    
     volumes:
       - /home/docker/kibana.yml:/usr/share/kibana/config/kibana.yml  
-      - /home/docker/kibana-data:/usr/share/kibana/data
+      - kibana-data:/usr/share/kibana/data
     networks:
       - core-infra
     ports:

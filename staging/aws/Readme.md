@@ -3,12 +3,12 @@
 Creating the stack requires the following steps
 
 1. Create the swarm security groups (swarm-security-group)
-2. Create the jumpbox security groups (jumpbox-security-group)
-3. Create jumpbox
-4. Log in to the jumpbox
-5. Create swarm managers and workers. 
-6. Connect them to the swarm
+2. Create jumpbox and security groups. Attach jumbox to swarm security group for full port access (jumpbox-security-group)
+3. Create Swarm Manager nodes
+5. Create swarm workers. 
+6. Connect them to the swarm - This needs to be done manually at this point.
 7. Install Rexray plugins
+8. Great an global infra network
 
 
 ### 1. Create the swarm security group
@@ -23,12 +23,73 @@ Creating the stack requires the following steps
 (aws first-hammar/staging/aws) $ ./create-jumpbox.sh create
 ```
 
-### 3 Create Swarm
+### 3 Create Swarm Security groups
+
+```
+(aws first-hammar/staging/aws) $ ./create-swarm-sg.sh create
+```
+
+### 4 Create Swarm Manager Nodes
 ```
 (aws first-hammar/staging/aws) $ ./create-swarm-manager.sh
 ```
 
+### 5 Create Swarm Manager Nodes
+
+```
+(aws first-hammar/staging/aws) $ ./create-swarm-worker.sh
+```
+
+### 6 Connect them to the swarm
+
+```
+(aws first-hammar/staging/aws) $ docker-machine ssh vm1
+(aws first-hammar/staging/aws) $ docker swarm init 
+(aws first-hammar/staging/aws) $ docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-34elumx2nrs3b23jhlgkypr802pbwf9hw64f5cjyxsv1t30swb-5n2m5xsjv9lquskqyh1hcg8ok 172.31.4.120:2377
+
+(aws first-hammar/staging/aws) $ docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-34elumx2nrs3b23jhlgkypr802pbwf9hw64f5cjyxsv1t30swb-8ldumao8dl45g1xc0mtb0pqjb 172.31.4.120:2377
+
+```
+
+Copy the token for the manager and paste it on each node by running `docker-machine ssh vm2` and `docker-machine ssh vm3`
+
+Copy the token for the worker and paste it on `vm4`, `vm5` and `vm6`
+
+Now `docker node ls` should display the swarm
+
+```
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+5jla1ietv6rgmwf92rh7sdjrm *   vm1                 Ready               Active              Leader              19.03.4
+b0741t0ma45nnvohqd61u5rt0     vm2                 Ready               Active              Reachable           19.03.4
+zl1zw5u2ad0j8g4hyuezssw7f     vm3                 Ready               Active              Reachable           19.03.4
+dzcntqh5faj705qyuq2d91d96     vm4                 Ready               Active                                  19.03.4
+x2p6hyv3xpjd8o0c3isr75dba     vm5                 Ready               Active                                  19.03.4
+tycin6q69vzx6oq6wvqua3p02     vm6                 Ready               Active                                  19.03.4
+```
+
+Praise Be!
+
+### 6. Ensure Docker does not require sudo
+
+```
+(aws first-hammar/staging/aws) ./run-cmd.sh 'sudo usermod -aG docker ubuntu'
+
+/bin/bash -c docker-machine ssh vm1  'sudo usermod -aG docker ubuntu' 
+/bin/bash -c docker-machine ssh vm2  'sudo usermod -aG docker ubuntu' 
+/bin/bash -c docker-machine ssh vm3  'sudo usermod -aG docker ubuntu' 
+/bin/bash -c docker-machine ssh vm4  'sudo usermod -aG docker ubuntu' 
+/bin/bash -c docker-machine ssh vm5  'sudo usermod -aG docker ubuntu' 
+/bin/bash -c docker-machine ssh vm6  'sudo usermod -aG docker ubuntu' 
+```
+
 ### 7. Install Rexray managed plugin for docker on the jumpbox and all swarm nodes
+
 
 ```
 ssh ubuntu@jumpbox_ip

@@ -103,6 +103,10 @@ function get_swarm_security_group_id(){
     swarm_security_group_id=$(aws ec2 describe-security-groups --group-name swarm-security-group | jq -r '.SecurityGroups | .[] | .GroupId')
 }
 
+function get_load_balancer_security_group_id(){
+    loadbalancer_security_group_id=$(aws ec2 describe-security-groups --group-name lb-security-group | jq -r '.SecurityGroups | .[] | .GroupId')
+}
+
 function get_jumpbox_security_group_id(){
     jumpbox_security_group_id=$(aws ec2 describe-security-groups --group-name jumpbox-security-group | jq -r '.SecurityGroups | .[] | .GroupId')
 }
