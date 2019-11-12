@@ -32,10 +32,12 @@ function find_subnet_zone(){
     fi
 }
 
-function create_3_manager_nodes(){
+function create_3_worker_nodes(){
     for i in 1 2 3;
     do
         find_subnet_zone         
         create_worker_node
     done
 }
+
+create_3_worker_nodes
