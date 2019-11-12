@@ -1,0 +1,81 @@
+version: '3.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1 
+    env_file:
+      - development.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:      
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - core-infra
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s   
+      placement:
+        constraints:
+          - node.labels.elasticsearch == true
+
+  kibana:
+    depends_on:
+      - es01
+    image: docker.elastic.co/kibana/kibana:7.4.1    
+    volumes:
+      - /home/docker/kibana.yml:/usr/share/kibana/config/kibana.yml  
+      - /home/docker/kibana-data:/usr/share/kibana/data
+    networks:
+      - core-infra
+    ports:
+      - "5601:5601" 
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s
+      placement:
+        constraints:
+          - node.labels.kibana == true
+
+  logstash:
+    build: 
+      context: ./../../elk/logstash  
+      dockerfile: Dockerfile      
+    depends_on:
+      - es01
+    image: registry.gitlab.com/goglance/first-hammar:logstash-1572718952
+    env_file: 
+      - logstash-development.env
+    ports:
+      - '9600:9600'
+      - '5228:5228/udp' 
+    networks:      
+      - core-infra
+    command: ['/usr/share/logstash/bin/logstash']
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 180s
+      placement:
+        constraints:
+          - node.labels.logstash == true
+
+networks:  
+  core-infra:   
+    external: true
+
+volumes:
+  elastic-data:            
+    driver: rexray  
+      

@@ -49,6 +49,30 @@ However we use a script that can be executed from the jumpbox to install it rath
 
 ```
 (aws first-hammar/staging/aws) ./install-rexray.sh
+
+./install-rexray.sh 
+/bin/bash -c docker-machine ssh vm1  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
+latest: Pulling from rexray/ebs
+713b84867e46: Verifying Checksum
+713b84867e46: Download complete
+Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
+Status: Downloaded newer image for rexray/ebs:latest
+Installed plugin rexray/ebs:latest
+/bin/bash -c docker-machine ssh vm2  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
+latest: Pulling from rexray/ebs
+713b84867e46: Verifying Checksum
+713b84867e46: Download complete
+Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
+Status: Downloaded newer image for rexray/ebs:latest
+Installed plugin rexray/ebs:latest
+/bin/bash -c docker-machine ssh vm3  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
+latest: Pulling from rexray/ebs
+713b84867e46: Verifying Checksum
+713b84867e46: Download complete
+Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
+Status: Downloaded newer image for rexray/ebs:latest
+Installed plugin rexray/ebs:latest
+
 ```
 
 This runs the following command
@@ -63,3 +87,22 @@ docker-machine ls | cut -c 1-4 | grep vm* | xargs -t -I"SERVER" /bin/bash -c "do
 3. It `cut`s the characters from 1-4 which describe the hostname (vm1, vm2 etc)
 4. We grep so that we don't end up with the title row (NAME)
 5. We the send it to `xargs` which stores each output to the -I variable `SERVER` in this case and call the bash command via `/bin/bash -c` which sshs into each node and runs the command
+
+### Verify if plugins are successfully installed
+
+We use the `run-cmd.sh` script which runs commands on all vms
+
+```
+(aws first-hammer/staging/aws/) ./run-cmd 'docker plugin ls'
+
+/bin/bash -c docker-machine ssh vm1  'docker plugin ls' 
+ID                  NAME                DESCRIPTION              ENABLED
+bf76c5ce7307        rexray/ebs:latest   REX-Ray for Amazon EBS   true
+/bin/bash -c docker-machine ssh vm2  'docker plugin ls' 
+ID                  NAME                DESCRIPTION              ENABLED
+4137b4fe4308        rexray/ebs:latest   REX-Ray for Amazon EBS   true
+/bin/bash -c docker-machine ssh vm3  'docker plugin ls' 
+ID                  NAME                DESCRIPTION              ENABLED
+832de09c0765        rexray/ebs:latest   REX-Ray for Amazon EBS   true
+
+```

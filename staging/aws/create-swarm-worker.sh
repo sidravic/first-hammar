@@ -26,8 +26,7 @@ function create_worker_nodes(){
 
 function create_3_manager_nodes(){
     for i in 1 2 3;
-    do 
-        swarm_security_group_id=get_swarm_security_group_id
-        create_manager_node
+    do         
+        create_worker_node
     done
 }
