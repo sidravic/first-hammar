@@ -10,7 +10,7 @@ function create() {
                           --key-name $DEFAULT_KEY_NAME \
                           --security-group-ids $jumpbox_security_group_id \
                           --subnet-id $DEFAULT_VPC_SUBNET1_ID \
-                          --user-data file://jumpbox-user-data.txt --tag-specifications 'ResourceType=instance,Tags=[{Key=jumpbox,Value=true}]' \
+                          --user-data file://jumpbox-user-data.txt --tag-specifications 'ResourceType=instance,Tags=[{Key=jumpbox,Value=true},{Key=Name,Value=staging-jumpbox,Key=environment,Value=staging}]' \
                           --associate-public-ip-address 
 
 }
