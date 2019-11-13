@@ -3,7 +3,7 @@ services:
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1 
     env_file:
-      - staging.env
+      - development.env
     ulimits:
       memlock:
         soft: -1
@@ -29,9 +29,11 @@ services:
     depends_on:
       - es01
     image: docker.elastic.co/kibana/kibana:7.4.1    
-    volumes:
-      - kibana.yml:/usr/share/kibana/config/kibana.yml  
-      - kibana-data:/usr/share/kibana/data
+    # volumes:
+    #   - /home/docker/kibana.yml:/usr/share/kibana/config/kibana.yml  
+    #   - /home/docker/kibana-data:/usr/share/kibana/data
+    env_file:
+      - development-kibana.env
     networks:
       - core-infra
     ports:
@@ -77,5 +79,5 @@ networks:
 
 volumes:
   elastic-data:            
-    driver: rexray/ebs
+    driver: rexray  
       

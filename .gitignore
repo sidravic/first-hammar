@@ -7,3 +7,4 @@ staging/keys
 jumpbox-user-data.txt
 staging/aws/rexray/config.yml
 staging/aws/.instance_ids
+staging.env
