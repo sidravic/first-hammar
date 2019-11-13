@@ -29,9 +29,11 @@ services:
     depends_on:
       - es01
     image: docker.elastic.co/kibana/kibana:7.4.1    
-    volumes:
-      - /home/docker/kibana.yml:/usr/share/kibana/config/kibana.yml  
-      - /home/docker/kibana-data:/usr/share/kibana/data
+    # volumes:
+    #   - /home/docker/kibana.yml:/usr/share/kibana/config/kibana.yml  
+    #   - /home/docker/kibana-data:/usr/share/kibana/data
+    env_file:
+      - development-kibana.env
     networks:
       - core-infra
     ports:

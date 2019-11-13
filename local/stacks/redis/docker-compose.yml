@@ -1,0 +1,32 @@
+version: '3.2'
+
+services:
+  ephemeral-tower-redis:
+      image: registry.gitlab.com/goglance/first-hammar:redis-1572596611
+      env_file: 
+        - development.env
+      volumes:
+        - redis-data:/data  
+      ports:
+        - 6380:6379
+      networks:
+        - core-infra
+      command: redis-server /etc/redis/redis.conf
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 10
+          window: 180s      
+        placement:
+          constraints:
+            - node.labels.redis == true
+
+
+volumes:  
+  redis-data:
+    driver: rexray 
+      
+networks:
+  core-infra:
+    external: true  
