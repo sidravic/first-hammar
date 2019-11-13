@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   ephemeral-tower-redis:
-      image: registry.gitlab.com/goglance/first-hammar:redis-1573639986
+      image: registry.gitlab.com/goglance/first-hammar:redis-1573641378
       env_file: 
         - staging.env
       volumes:
@@ -11,7 +11,10 @@ services:
         - 6380:6379
       networks:
         - core-infra
-      command: redis-server /etc/redis/redis.conf
+      sysctls:
+        net.core.somaxconn: 65535
+        vm.overcommit_memory: 1
+      command: "redis-server /etc/redis/redis.conf"
       deploy:
         restart_policy:
           condition: on-failure
