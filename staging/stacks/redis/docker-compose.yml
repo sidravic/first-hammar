@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   ephemeral-tower-redis:
-      image: registry.gitlab.com/goglance/first-hammar:redis-1572596611
+      image: registry.gitlab.com/goglance/first-hammar:redis-1573639986
       env_file: 
         - staging.env
       volumes:
