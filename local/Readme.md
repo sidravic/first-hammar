@@ -792,3 +792,60 @@ networks:
     external: true  
 
 ```
+
+# Staging deployment of elasticsearch and redis
+
+Increase `somaxconn` at `/etc/sysctl.conf`
+
+```
+vm.max_map_count=262144
+fs.file-max = 65535
+```
+
+At `/etc/security/limits.conf`
+
+```
+root soft     nproc          65535    
+root hard     nproc          65535   
+root soft     nofile         65535   
+root hard     nofile         65535
+```
+
+### Addition component in the docker-compose file as long as you're running docker > v19.0.4
+
+For redis
+```
+...
+      ports:
+        - 6380:6379
+      networks:
+        - core-infra
+      sysctls:
+        net.core.somaxconn: 65535    
+...
+```
+
+For elasticsearch
+
+```
+...
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - core-infra
+    sysctls:
+        net.core.somaxconn: 65535  
+        vm.max_map_count: 262144
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    deploy:
+  ...
+
+```
+
+
+

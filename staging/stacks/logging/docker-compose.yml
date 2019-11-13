@@ -15,6 +15,14 @@ services:
       - 9300:9300
     networks:
       - core-infra
+    sysctls:
+        net.core.somaxconn: 65535  
+        vm.max_map_count: 262144
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
     deploy:
       restart_policy:
         condition: on-failure
