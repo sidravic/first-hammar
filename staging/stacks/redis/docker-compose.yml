@@ -12,8 +12,7 @@ services:
       networks:
         - core-infra
       sysctls:
-        net.core.somaxconn: 65535
-        vm.overcommit_memory: 1
+        net.core.somaxconn: 65535        
       command: "redis-server /etc/redis/redis.conf"
       deploy:
         restart_policy:
