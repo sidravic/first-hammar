@@ -24,7 +24,7 @@ services:
  
 volumes:
   postgres-data:          
-      driver: rexray
+      driver: rexray/ebs
     
 
 networks:

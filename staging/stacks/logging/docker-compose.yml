@@ -79,5 +79,5 @@ networks:
 
 volumes:
   elastic-data:            
-    driver: rexray  
+    driver: rexray/ebs 
       

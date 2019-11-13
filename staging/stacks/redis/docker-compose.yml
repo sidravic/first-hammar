@@ -25,7 +25,7 @@ services:
 
 volumes:  
   redis-data:
-    driver: rexray 
+    driver: rexray/ebs 
       
 networks:
   core-infra:
