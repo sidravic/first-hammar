@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-eval (docker-machine env vm1)
+eval $(docker-machine env vm1)
 
 docker node update --label-add stateless=true vm1
 docker node update --label-add stateless=true vm2
