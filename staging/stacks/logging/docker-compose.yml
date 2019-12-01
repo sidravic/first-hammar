@@ -61,7 +61,7 @@ services:
       dockerfile: Dockerfile      
     depends_on:
       - es01
-    image: registry.gitlab.com/goglance/first-hammar:logstash-1573970706
+    image: registry.gitlab.com/goglance/first-hammar:logstash-1575095575
     env_file: 
       - staging-logstash.env
     ports:
