@@ -112,27 +112,12 @@ However we use a script that can be executed from the jumpbox to install it rath
 (aws first-hammar/staging/aws) ./install-rexray.sh
 
 ./install-rexray.sh 
-/bin/bash -c docker-machine ssh vm1  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
+/bin/bash -c docker-machine ssh vm1  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=xxxxxxxxxxxxxxx EBS_SECRETKEY=xxxxxxxxxxxxxx --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
 latest: Pulling from rexray/ebs
 713b84867e46: Verifying Checksum
 713b84867e46: Download complete
 Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
 Status: Downloaded newer image for rexray/ebs:latest
-Installed plugin rexray/ebs:latest
-/bin/bash -c docker-machine ssh vm2  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
-latest: Pulling from rexray/ebs
-713b84867e46: Verifying Checksum
-713b84867e46: Download complete
-Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
-Status: Downloaded newer image for rexray/ebs:latest
-Installed plugin rexray/ebs:latest
-/bin/bash -c docker-machine ssh vm3  'docker plugin install rexray/ebs:latest REXRAY_PREEMPT=true EBS_REGION=us-west-1 EBS_ACCESSKEY=AKIA6FLNIRSTUU2FY2CO EBS_SECRETKEY=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 --grant-all-permissions EBS_ENDPOINT=ec2.us-west-1.amazonaws.com EBS_USELARGEDEVICERANGE=true' 
-latest: Pulling from rexray/ebs
-713b84867e46: Verifying Checksum
-713b84867e46: Download complete
-Digest: sha256:bbe1cfc5241d765c735e1d80fd790a0fc50e2e7064239255c4b61397a16c3355
-Status: Downloaded newer image for rexray/ebs:latest
-Installed plugin rexray/ebs:latest
 
 ```
 
